@@ -1,45 +1,70 @@
-import { TableCell, TableRow, TableBody, TextField, Select } from '@mui/material';
+import { Button, MenuItem, Input, Select, TextField } from '@mui/material';
 import React, { useContext, useState } from 'react';
 import { AppContext } from '../context/Context';
-import { isLoggedIn } from '../utils/FormUtils';
+import { isLoggedIn, validateRequired } from '../utils/FormUtils';
 
 const CustomerSearch = () => {
    const { state, setState } = useContext(AppContext);
-   const [searchby, setSearchby] = useState();
-   const [search, setSearch] = useState();
+   const [values, setValues] = useState({ 'topic': '', 'search': '' });
 
    let userInfo = [
       { value: 'name', label: 'Name' },
-      { value: 'username', label: 'User name' },
+      { value: 'uname', label: 'User name' },
       { value: 'uid', label: 'User Id' }
    ];
 
    let items = userInfo.map((item, i) => {
       return (
-         <option key={i} value={item.id}>{item.label}</option>
+         <MenuItem key={i} value={item.value} size="small">{item.label}</MenuItem>
       )
    });
+
+   const setTopic = (t) => {
+      let vals = newValues();
+      vals.topic = t;
+      setValues(vals);
+   }
+
+   const setSearch = (s) => {
+      let vals = newValues();
+      vals.search = s;
+      setValues(vals);
+   }
+
+   const handleSubmit = (e) => {
+      e.preventDefault();
+
+   }
+
+   function newValues() {
+      return {
+         'topic': values.topic,
+         'search': values.search
+      };
+   }
 
    return (
       <>
          {(isLoggedIn(state)
             ?
-            <div className="form border-black">Search by user id, user name, first name, or last name:
-               <TableBody>
-                  <TableRow>
-                     <TableCell >
-                        <label htmlFor="search">Search by: </label>
-                     </TableCell>
-                     <TableCell>
-                        <Select id="searchb" label="search by" onChange={e => setSearchby(e.target.value)}>
-                           {items}
-                        </Select>
-                     </TableCell>
-                     <TableCell>
-                        <TextField id="searchc" variant="standard" className='' />
-                     </TableCell>
-                  </TableRow>
-               </TableBody>
+            <div className='form border-black'>
+               <form onSubmit={e => handleSubmit(e)}>
+                  <label className='row' style={{ paddingBottom: 25 }}>Search by user id, user name, first name, or last name:</label>
+                  <Select
+                     required
+                     id="topic"
+                     name="topic"
+                     value={values.topic}
+                     label="Topic"
+                     onChange={(e) => { setTopic(e.target.value) }}
+                     variant="outlined" size="small">
+                     <MenuItem key="-1" value=""></MenuItem>
+                     {items}
+                  </Select>
+                  <TextField id="search" onChange={(e) => { setSearch(e.target.value) }} required label={values.topic} size="small"
+                     style={{ paddingRight: 10, paddingLeft: 10 }} />
+                  <Button id="submit" type="submit" variant="contained" size="small">Search</Button>
+               </form>
             </div>
             : <div />)}
       </>
