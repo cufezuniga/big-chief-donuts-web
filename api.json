@@ -1,0 +1,238 @@
+{
+   "openapi": "3.1.0",
+   "info": {
+      "version": "1.0.0",
+      "title": "Big Chief Donuts API",
+      "description": "Backend logic and database interface for Big Chief Donuts rewards program."
+   },
+   "paths": {
+      "/login": {
+         "post": {
+            "summary": "Login to user account",
+            "requestBody": {
+               "description": "The user's login credentials: User name and password",
+               "content": {
+                  "application/json": {
+                     "schema": {
+                        "$ref": "#/components/schemas/login"
+                     }
+                  }
+               }
+            },
+            "responses": {
+               "200": {
+                  "description": "User credentials were accepted, and the user is logged in.",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/UserCredentials"
+                        }
+                     }
+                  }
+               },
+               "401": {
+                  "description": "Failed login",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/Error"
+                        }
+                     }
+                  }
+               },
+               "404": {
+                  "description": "No spacecraft found for the provided `spacecraftId`",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/Error"
+                        }
+                     }
+                  }
+               },
+               "500": {
+                  "description": "Unexpected error",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/Error"
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      },
+      "/search/customer/basic/custId/{custId}": {
+         "parameters": [
+            {
+               "name": "custId",
+               "description": "The customers unique id",
+               "in": "path",
+               "required": true,
+               "schema": {
+                  "$ref": "#/components/schemas/custId"
+               }
+            }
+         ],
+         "get": {
+            "summary": "Search for basic customer info by their id",
+            "responses": {
+               "200": {
+                  "description": "The customer was found and returned",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/Spacecraft"
+                        }
+                     }
+                  }
+               },
+               "404": {
+                  "description": "No spacecraft found for the provided `spacecraftId`",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/Error"
+                        }
+                     }
+                  }
+               },
+               "500": {
+                  "description": "Unexpected error",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/Error"
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+   },
+   "components": {
+      "schemas": {
+         "login": {
+            "type": "object",
+            "required": [
+               "username",
+               "password"
+            ],
+            "properties": {
+               "username": {
+                  "type": "string"
+               },
+               "password": {
+                  "type": "string"
+               }
+            },
+            "example": {
+               "username": "cufezuniga",
+               "password": "asdfsadf"
+            }
+         },
+         "authenticatedUser": {
+            "type": "object",
+            "required": [
+               "username",
+               "name",
+               "token",
+               "roles"
+            ],
+            "properties": {
+               "username": {
+                  "description": "Unique name for customer used for authenticating",
+                  "type": "string"
+               },
+               "name": {
+                  "description": "First name, middle initial (optionsl), and last name",
+                  "type": "string"
+               },
+               "token": {
+                  "description": "Authenication token used to access API",
+                  "type": "string"
+               },
+               "roles": {
+                  "description": "List of privilege an authenticated user has in an application",
+                  "type": "string",
+                  "enum": [
+                     "admin",
+                     "employee",
+                     "customer"
+                  ]
+               }
+            },
+            "example": {
+               "id": "hrghewirghiewhgiwenhrgipruh",
+               "name": "Cufe Zuniga",
+               "username": "cufezuniga",
+               "phone": "(719) 659-5066",
+               "email": "rodneyzhamilton@gmail.com"
+            },
+            "customer": {
+               "type": "object",
+               "required": [
+                  "id",
+                  "name",
+                  "username",
+                  "phone",
+                  "email"
+               ],
+               "properties": {
+                  "id": {
+                     "description": "unique id of customer record in database.",
+                     "type": "string"
+                  },
+                  "name": {
+                     "description": "First name, middle initial (optionsl), and last name",
+                     "type": "string"
+                  },
+                  "token": {
+                     "description": "Authenication token used to access API",
+                     "type": "string"
+                  },
+                  "roles": {
+                     "description": "List of privilege an authenticated user has in an application",
+                     "type": "string",
+                     "enum": [
+                        "admin",
+                        "employee",
+                        "customer"
+                     ]
+                  }
+               },
+               "example": {
+                  "id": "hrghewirghiewhgiwenhrgipruh",
+                  "name": "Cufe Zuniga",
+                  "username": "cufezuniga",
+                  "phone": "(719) 659-5066",
+                  "email": "rodneyzhamilton@gmail.com"
+               },
+               "custId": {
+                  "type": "string"
+               },
+               "Error": {
+                  "type": "object",
+                  "required": [
+                     "message"
+                  ],
+                  "properties": {
+                     "message": {
+                        "description": "A human readable error message",
+                        "type": "string"
+                     }
+                  }
+               }
+            },
+            "securitySchemes": {
+               "ApiKey": {
+                  "type": "apiKey",
+                  "in": "header",
+                  "name": "X-Api-Key"
+               }
+            }
+         }
+      }
+   }

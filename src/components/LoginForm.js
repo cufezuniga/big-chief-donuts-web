@@ -44,15 +44,8 @@ const LoginForm = (props) => {
    };
 
    const handleSubmit = (e) => {
-      let isValid = validateRequired(userName) && validateRequired(password);
-      if (isValid) {
-         setError("");
-         login();
-      }
-      else {
-         setError("User name and password are required.");
-      }
-
+      setError("");
+      login();
       e.preventDefault();
    }
 
@@ -60,9 +53,9 @@ const LoginForm = (props) => {
       <div className='form border-black' style={{ backgroundColor: ' honeydew', width: '15%' }} >
          < form onSubmit={e => handleSubmit(e)} >
             <label htmlFor='name' className='row'>user name: </label>
-            <input type="text" id="username" onChange={e => setUserName(e.target.value)} style={{ margin: 2 }} />
+            <input type="text" id="username" required onChange={e => setUserName(e.target.value)} style={{ margin: 2 }} />
             <label htmlFor="pwd" className='row'>password: </label>
-            <input type="password" id="password" onChange={e => setPassword(e.target.value)} style={{ margin: 2 }} />
+            <input type="password" id="password" required onChange={e => setPassword(e.target.value)} style={{ margin: 2 }} />
             <input type="submit" value="Login" className='row' style={{ margin: 3 }} />
             <label className='row' id='error' style={{ color: 'red' }}>{error}</label>
          </form >
